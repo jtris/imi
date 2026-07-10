@@ -55,3 +55,8 @@ dkms.conf
 build.bat
 build.sh
 _assets_dpgh/
+
+# other
+compile_commands.json
+.cache/
+src/imi
