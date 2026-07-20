@@ -1,9 +1,9 @@
 
 CC = cc
-CFLAGS = -ggdb -Wall -Wextra -pedantic
+CFLAGS = -I. #-ggdb -Wall -Wextra -pedantic
 LDFLAGS = 
 
-SRC = main.c cli.c
+SRC = main.c cli.c core/format_handler.c format/png/png_format.c format/png/png_chunks.c
 OUT = imi
 
 all: $(OUT)

@@ -38,7 +38,6 @@ bool parse_args(int argc, char **argv, Options *out)
         if (strncmp(arg, "--", 2) == 0) is_long_opt = true;
 
         const char *equals_char = strchr(arg, '='); // pointer to '=' in arg
-        
 
         size_t name_len;
         if (is_long_opt) {
@@ -56,7 +55,7 @@ bool parse_args(int argc, char **argv, Options *out)
             
                 // handle opts with '='
                 if (options[j].takes_value) {
-                    if (equals_char != NULL) out->chunk_name = equals_char + 1;
+                    if (equals_char != NULL) out->section_name = equals_char + 1;
                     else return false;
                 }
 

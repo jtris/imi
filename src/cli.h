@@ -3,22 +3,21 @@
 
 #include <stdbool.h>
 
-#define PRINT_USAGE(stream) fprintf(stream, \
+#define USAGE \
     "Usage:\n" \
     "  imi [filepath] [options]\n\n" \
     "Options:\n" \
     "  (no options selected defaults to --list-all)\n" \
-    "  %-30s %s\n" \
-    "  %-30s %s\n" \
-    "  %-30s %s\n", \
-    "--list-all, -a", "List all metadata contents", \
-    "--list-present, -p", "List present metadata", \
-    "--list=<name>, -l=<name>", "List metadata recognized by <name>" \
-)
-#define PRINT_INVALID_ARGUMENT_ERROR(stream) do { \
-    fprintf(stream, "Error: invalid argument\n"); \
-    fprintf(stream, "Try the --help/-h option for more information.\n"); \
-} while (0)
+    "  --list-all, -a                 Show fields for every section that has a registered parser\n" \
+    "  --list-present, -p             List every section found in the file\n" \
+    "  --list=<name>, -l=<name>       Show the decoded fields for one section (e.g. --list=IHDR)\n" \
+    "  --help, -h                     Print help\n"
+
+#define INVALID_ARGUMENT_ERROR \
+    "Error: invalid argument\n" \
+    "Try the --help/-h option for more information.\n"
+
+#define FILE_ACCESS_ERROR "Error: Could not open file\n"
 
 
 typedef enum { HELP, LIST_ALL, LIST_PRESENT, LIST } Mode;
@@ -38,7 +37,7 @@ typedef struct OptionSpec {
 */
 typedef struct Options {
     Mode mode;
-    char *chunk_name;
+    char *section_name;
     char *path;
 } Options;
 
