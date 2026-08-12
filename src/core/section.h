@@ -4,6 +4,17 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
+#include <stdlib.h>
+
+#define SECTION_TABLE_APPEND(xs, x)\
+    do {\
+        if (xs->count >= xs->capacity) {\
+            if (xs->capacity == 0) xs->capacity = 64;\
+            else xs->capacity *= 2;\
+            xs->items = realloc(xs->items, xs->capacity*sizeof(*xs->items));\
+        }\
+        xs->items[xs->count++] = x;\
+    } while(0)
 
 
 typedef enum { FIELD_INT, FIELD_STRING, FIELD_FRACTION,
@@ -56,8 +67,8 @@ typedef struct SectionParserEntry {
  */
 typedef struct SectionInfo {
     char name[16];
-    long data_offset;
-    long data_length;
+    size_t data_offset;
+    size_t data_length;
 } SectionInfo;
 
 
@@ -66,6 +77,5 @@ typedef struct SectionTable {
     size_t count;
     size_t capacity;
 } SectionTable;
-
 
 #endif // SECTION_H

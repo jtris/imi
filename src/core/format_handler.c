@@ -6,6 +6,9 @@
 #include "format/png/png_format.h"
 
 
+/*
+ * register all format handlers here
+*/
 static const ImageFormatHandler *format_registry[] = {
     &png_handler,
 };
@@ -13,9 +16,10 @@ static const ImageFormatHandler *format_registry[] = {
 static const size_t format_registry_count = sizeof(format_registry) / sizeof(*format_registry);
 
 
-static bool read_file_signature();
-
-
+/*
+ * returns the appropriate format handler if the format is recognized by its signature (magic bytes)
+ * otherwise NULL
+*/
 const ImageFormatHandler *detect_format(FILE *fp)
 {
     uint8_t prefix_buffer[SIGNATURE_BUFFER_SIZE] = {0};

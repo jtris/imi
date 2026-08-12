@@ -9,6 +9,8 @@
 
 #define SIGNATURE_BUFFER_SIZE 50
 #define UNRECOGNIZED_FORMAT_ERROR "Error: Unrecognized or not supported file format\n"
+#define NO_SECTION_FOUND_ERROR "Error: No sections found despite recognizing a valid format signature.\n"\
+                               "       The provided file might be corrupted or truncated.\n"
 
 /*
  * used to store "signature/magic" bytes for each format
@@ -25,7 +27,7 @@ typedef struct SignatureBytes {
 typedef struct ImageFormatHandler {
     const char *format_name;
     SignatureBytes signature;
-    bool (*build_section_table) (FILE *f, SectionTable *out);
+    size_t (*build_section_table) (FILE *f, SectionTable *out);
     const SectionParserEntry *parsers;
     size_t parser_count;
 } ImageFormatHandler;

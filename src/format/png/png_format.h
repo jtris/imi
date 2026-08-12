@@ -10,7 +10,7 @@
 
 extern const ImageFormatHandler png_handler;
 
-bool png_build_section_table(FILE *f, SectionTable *out);
+size_t png_build_section_table(FILE *f, SectionTable *out);
 
 
 #endif // PNG_FORMAT_H
