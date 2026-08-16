@@ -46,7 +46,7 @@ size_t png_build_section_table(FILE *fp, SectionTable *out)
         memcpy(info.name, buffer+4, 4);
         info.name[4] = 0; // add null terminator
 
-        SECTION_TABLE_APPEND(out, info);
+        DA_APPEND(out, info);
         section_count++;
 
         if (strcmp(info.name, "IEND") == 0) break; // empty end chunk

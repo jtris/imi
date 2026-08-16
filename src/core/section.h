@@ -6,10 +6,10 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define SECTION_TABLE_APPEND(xs, x)\
+#define DA_APPEND(xs, x)\
     do {\
         if (xs->count >= xs->capacity) {\
-            if (xs->capacity == 0) xs->capacity = 64;\
+            if (xs->capacity == 0) xs->capacity = 16;\
             else xs->capacity *= 2;\
             xs->items = realloc(xs->items, xs->capacity*sizeof(*xs->items));\
         }\
@@ -42,12 +42,13 @@ typedef struct SectionField {
  */
 typedef struct SectionResult {
     char section_name[16];
-    SectionField *fields;
-    size_t field_count;
-    size_t field_capacity;
+    SectionField *items;
+    size_t count;
+    size_t capacity;
     bool ok;
     char *error;            // error message
 } SectionResult;
+
 
 /*
  * section parser
