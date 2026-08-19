@@ -22,7 +22,7 @@ bool parse_args(int argc, char **argv, Options *out)
     bool is_long_opt = false;
 
     for (int i = 1; i < argc; ++i) {
-        const char *arg = argv[i];
+        char *arg = argv[i];
         bool recognized_argument = false;
 
         // if argument isn't prepended with '-' nor '--' it's the path

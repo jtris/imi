@@ -37,8 +37,8 @@ typedef struct OptionSpec {
 */
 typedef struct Options {
     Mode mode;
-    char *section_name;
-    char *path;
+    const char *section_name;
+    const char *path;
 } Options;
 
 

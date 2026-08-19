@@ -14,7 +14,7 @@ typedef struct PngContext {
 } PngContext;
 
 
-size_t png_build_section_table(FILE *f, SectionTable *out);
+size_t png_build_section_table(FILE *fp, SectionTable *out);
 
 
 extern const ImageFormatHandler png_handler;

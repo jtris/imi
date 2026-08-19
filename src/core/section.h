@@ -33,7 +33,7 @@ typedef struct SectionField {
         char *as_string;
         struct { int32_t numerator, denominator; } as_fraction;
         struct { int64_t *arr; size_t len; } as_int_array;
-        struct { int64_t raw; char *resolved_label; } as_enum; // raw int representing a lookup table label
+        struct { int64_t raw; const char *resolved_label; } as_enum; // raw int representing a lookup table label
         struct { uint8_t *data; size_t len; } as_bytes;
     };
 } SectionField;

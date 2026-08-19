@@ -27,7 +27,7 @@ typedef struct SignatureBytes {
 typedef struct ImageFormatHandler {
     const char *format_name;
     SignatureBytes signature;
-    size_t (*build_section_table) (FILE *f, SectionTable *out);
+    size_t (*build_section_table) (FILE *fp, SectionTable *out);
 
     const SectionParserEntry *parsers;
     size_t parser_count;

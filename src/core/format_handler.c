@@ -28,7 +28,7 @@ const ImageFormatHandler *detect_format(FILE *fp)
     if (bytes_read < SIGNATURE_BUFFER_SIZE) return NULL;
 
     for (size_t i = 0; i < format_registry_count; ++i) {
-        ImageFormatHandler *current_format = format_registry[i];
+        const ImageFormatHandler *current_format = format_registry[i];
         SignatureBytes current_signature = current_format->signature;
 
         if (current_signature.offset + current_signature.len > SIGNATURE_BUFFER_SIZE) continue;
