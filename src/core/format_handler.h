@@ -28,8 +28,12 @@ typedef struct ImageFormatHandler {
     const char *format_name;
     SignatureBytes signature;
     size_t (*build_section_table) (FILE *f, SectionTable *out);
+
     const SectionParserEntry *parsers;
     size_t parser_count;
+
+    void *(*build_context)(FILE *fp, const SectionTable *table);
+    void (*free_context)(void *ctx);
 } ImageFormatHandler;
 
 

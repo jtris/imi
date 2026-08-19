@@ -9,9 +9,6 @@
 #include "core/format_handler.h"
 #include "util/read_bytes.h"
 
-static void *png_build_context(FILE *fp, const SectionTable *table);
-static void png_free_context(void *ctx);
-
 
 static const uint8_t png_signature_bytes[] = { 0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n'};
 
@@ -24,8 +21,7 @@ const ImageFormatHandler png_handler = {
     .signature = {
         .bytes = png_signature_bytes, 
         .len = sizeof(png_signature_bytes),
-        .offset = 0
-    },
+        .offset = 0 },
     .build_section_table = png_build_section_table,
     .parsers = png_parsers,
     .parser_count = sizeof(png_parsers)/sizeof(*png_parsers),
@@ -34,29 +30,16 @@ const ImageFormatHandler png_handler = {
 };
 
 
-static void *png_build_context(FILE *fp, const SectionTable *table)
+void *png_build_context(FILE *fp, const SectionTable *table)
 {
-    PngContext *ctx = malloc(sizeof(*ctx));
-    *ctx = (PngContext) {0};
-
-    for (size_t i = 0; i < table->count; ++i) {
-        if (strcmp("IHDR", table->items[i].name) != 0) continue;
-
-        // read header contents and directly read the `color type` byte
-        // it's the only piece of information other png chunks might need
-        uint8_t header_buffer[13];
-        fseek(fp, table->items[i].data_offset, SEEK_SET);
-        fread(header_buffer, 1, sizeof(header_buffer), fp); 
-        ctx->color_type = read_u8_be(header_buffer, 9);
-        ctx->has_color_type = true;
-        break;
-    }
-
-    return ctx;
+    return NULL;
 }
 
 
-static void png_free_context(void *ctx) { free(ctx); }
+void png_free_context(void *ctx)
+{
+    return;
+}
 
 
 size_t png_build_section_table(FILE *fp, SectionTable *out)
