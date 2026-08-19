@@ -2,8 +2,44 @@
 #include <stdbool.h>
 #include "core/section.h"
 #include "png_chunks.h"
-#include "core/section.h"
 #include "util/read_bytes.h"
+
+
+static const char *IHDR_resolve_color_type(uint8_t c)
+{
+    switch (c) {
+        case 0: return "grayscale";
+        case 2: return "truecolor";
+        case 3: return "indexed";
+        case 4: return "grayscale + alpha";
+        case 6: return "truecolor + alpha";
+        default: return "unrecognized value";
+    }
+}
+
+
+static const char *IHDR_resolve_compression_method(uint8_t c)
+{
+    if (c != 0) return "unrecognized value"; // only 0 is defined
+    return "inflate/deflate";
+}
+
+
+static const char *IHDR_resolve_filter_method(uint8_t f)
+{
+    if (f != 0) return "unrecognized value"; // only 0 is defined
+    return "adaptive";
+}
+
+
+static const char *IHDR_resolve_interlace_method(uint8_t i)
+{
+    switch (i) {
+        case 0: return "no interlace";
+        case 1: return "Adam7 interlace";
+        default: return "unrecognized value";
+    }
+}
 
 
 SectionResult png_parse_IHDR(const uint8_t *buffer, size_t len, void *ctx) 
@@ -17,77 +53,31 @@ SectionResult png_parse_IHDR(const uint8_t *buffer, size_t len, void *ctx)
     Filter method:      1 byte
     Interlace method:   1 byte
     */
-    
-    SectionResult result = {
-        .section_name = "IHDR",
-        .items = NULL,
-        .count = 0,
-        .capacity = 0,
-        .ok = true,
-        .error = NULL
-    };
 
-    SectionField width = {
-        .label = "width",
-        .type = FIELD_INT,
-        .as_int = read_u32_be(buffer, 0),
-    };
-    DA_APPEND((&result), width);
+    SectionResult result = {0}; // TODO: section result name assignment
+    result.ok = true;
 
-    SectionField height = {
-        .label = "height",
-        .type = FIELD_INT,
-        .as_int = read_u32_be(buffer, 4),
-    };
-    DA_APPEND((&result), height);
+    if (len < 13) {
+        result.ok = false;
+        result.error = "IHDR chunk is too short.";
+        return result;
+    }
 
-    SectionField bit_depth = {
-        .label = "bit depth",
-        .type = FIELD_INT,
-        .as_int = read_u8_be(buffer, 8),
-    };
-    DA_APPEND((&result), bit_depth);
+    da_append_int(&result, "width", read_u32_be(buffer, 0));
+    da_append_int(&result, "height", read_u32_be(buffer, 4));
+    da_append_int(&result, "bit depth", read_u8_be(buffer, 8));
 
-    SectionField color_type = {
-        .label = "color type",
-        .type = FIELD_ENUM,
-        .as_enum = {
-            .raw = read_u8_be(buffer, 9),
-            .resolved_label = "TMP" // TODO: label resolution
-        },
-    };
-    DA_APPEND((&result), color_type);
+    uint8_t color = read_u8_be(buffer, 9);
+    da_append_enum(&result, "color type", color, IHDR_resolve_color_type(color));
 
-    // compression method: 1 byte
-    SectionField compression_method = {
-        .label = "compression method",
-        .type = FIELD_ENUM,
-        .as_enum = {
-            .raw = read_u8_be(buffer, 10),
-            .resolved_label = "TMP" // TODO: label resolution
-        },
-    };
-    DA_APPEND((&result), compression_method);
+    uint8_t compression = read_u8_be(buffer, 10);
+    da_append_enum(&result, "compression method", compression, IHDR_resolve_compression_method(compression));
 
-    SectionField filter_method = {
-        .label = "filter method",
-        .type = FIELD_ENUM,
-        .as_enum = {
-            .raw = read_u8_be(buffer, 11),
-            .resolved_label = "TMP" // TODO: label resolution
-        },
-    };
-    DA_APPEND((&result), filter_method);
+    uint8_t filter = read_u8_be(buffer, 11);
+    da_append_enum(&result, "filter method", filter, IHDR_resolve_filter_method(filter));
 
-    SectionField interlace_method = {
-        .label = "interlace method",
-        .type = FIELD_ENUM,
-        .as_enum = {
-            .raw = read_u8_be(buffer, 12),
-            .resolved_label = "TMP" // TODO: label resolution
-        },
-    };
-    DA_APPEND((&result), interlace_method);
+    uint8_t interlace = read_u8_be(buffer, 12);
+    da_append_enum(&result, "interlace method", interlace, IHDR_resolve_interlace_method(interlace));
 
     return result;
 }

@@ -20,6 +20,7 @@
 typedef enum { FIELD_INT, FIELD_STRING, FIELD_FRACTION,
                FIELD_INT_ARRAY, FIELD_ENUM, FIELD_BYTES } FieldType;
 
+
 /*
  * represents an individual field belonging to a section
  */
@@ -78,5 +79,16 @@ typedef struct SectionTable {
     size_t count;
     size_t capacity;
 } SectionTable;
+
+
+/*
+ * functions for adding section fields to a SectionResult
+*/
+void da_append_int(SectionResult *result, const char *label, int64_t value);
+void da_append_string(SectionResult *result, const char *label, char *string);
+void da_append_fraction(SectionResult *result, const char *label, int32_t numerator, int32_t denominator);
+void da_append_int_array(SectionResult *result, const char *label, int64_t *arr, size_t len);
+void da_append_enum(SectionResult *result, const char *label, int64_t raw, const char *resolved_label);
+
 
 #endif // SECTION_H
