@@ -2,8 +2,9 @@
 #include "cli.h"
 #include "core/format_handler.h"
 #include "core/section.h"
+#include "core/render.h"
 
-#include "format/png/png_chunks.h" // TMP
+#include "format/png/png_chunks.h" // TMP: to test IHDR parsing
 
 
 int main(int argc, char **argv)
@@ -75,5 +76,12 @@ int main(int argc, char **argv)
 
     fclose(fp);
     return 0;
+}
+
+
+void list_all_opt(FILE *fp, ImageFormatHandler *handler, SectionTable *table, OutputRenderer renderer)
+{
+    // NEXT
+    return;
 }
 
