@@ -39,3 +39,15 @@ const ImageFormatHandler *detect_format(FILE *fp)
     return NULL;
 }
 
+
+SectionParserFn find_parser_fn(const ImageFormatHandler *handler, const char *section_name)
+{
+    for (size_t i = 0; i < handler->parser_count; ++i) {
+        if (strcmp(handler->parsers[i].name, section_name) == 0)
+            return handler->parsers[i].function;
+    }
+
+    return NULL;
+}
+
+

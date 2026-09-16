@@ -1,10 +1,33 @@
 #include <stdio.h>
+#include <string.h>
 #include "cli.h"
 #include "core/format_handler.h"
 #include "core/section.h"
 #include "core/render.h"
 
 #include "format/png/png_chunks.h" // TMP: to test IHDR parsing
+
+
+void opt_list_all(FILE *fp, FILE *render_dest_fp, const ImageFormatHandler *handler, SectionTable *table, OutputRenderer renderer)
+{
+    for (size_t i = 0; i < table->count; ++i) {
+        SectionParserFn parse = find_parser_fn(handler, table->items[i].name);
+        if (parse == NULL) continue; // no parser found
+
+        // parse section
+        uint8_t buffer_length;
+        uint8_t *buffer = read_section(fp, table->items[i], &buffer_length); // NEXT: implement read_section
+        SectionResult result = parse(buffer, buffer_length, NULL);
+
+        // assign section name
+        strncpy(result.section_name, table->items[i].name, sizeof(result.section_name)-1);
+    
+        renderer.render(&result, render_dest_fp);
+        free(buffer);
+    }
+
+    return;
+}
 
 
 int main(int argc, char **argv)
@@ -74,14 +97,9 @@ int main(int argc, char **argv)
     printf("(%s) %s: %d -> %s\n", r.section_name, r.items[6].label, r.items[6].as_enum.raw, r.items[6].as_enum.resolved_label); // interlace method
 
 
+    opt_list_all(fp, NULL, format_handler, &section_table, text_renderer);
+
     fclose(fp);
     return 0;
-}
-
-
-void list_all_opt(FILE *fp, ImageFormatHandler *handler, SectionTable *table, OutputRenderer renderer)
-{
-    // NEXT
-    return;
 }
 

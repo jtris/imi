@@ -38,5 +38,6 @@ typedef struct ImageFormatHandler {
 
 
 const ImageFormatHandler *detect_format(FILE *fp);
+SectionParserFn find_parser_fn(const ImageFormatHandler *handler, const char *section_name);
 
 #endif // FORMAT_HANDLER_H

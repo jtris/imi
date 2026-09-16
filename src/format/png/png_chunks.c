@@ -54,7 +54,7 @@ SectionResult png_parse_IHDR(const uint8_t *buffer, size_t len, void *ctx)
     Interlace method:   1 byte
     */
 
-    SectionResult result = {0}; // TODO: section result name assignment
+    SectionResult result = {0};
     result.ok = true;
 
     if (len < 13) {
