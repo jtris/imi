@@ -14,7 +14,7 @@ const OutputRenderer text_renderer = {
 
 static void render_text(SectionResult *render_data, FILE *fp)
 {
-    // TODO
+    // NEXT: implement renderer
     return;
 }
 
