@@ -16,17 +16,10 @@ void opt_list_all(FILE *fp, FILE *render_dest_fp, const ImageFormatHandler *hand
 
         // parse section
         uint8_t *buffer = read_section(fp, table->items[i]); 
-        SectionResult result = parse(buffer, table->items[i].data_length, NULL);
+        SectionResult result = parse(buffer, table->items[i].data_length, NULL); // TODO: error handling (result.ok)
 
         // assign section name
         strncpy(result.section_name, table->items[i].name, sizeof(result.section_name)-1);
-
-        // TMP: print out parsed data before a renderer is implemented
-        printf("parsed section: %s\n", result.section_name);
-        printf("item count: %d\n", result.count);
-        for (size_t i = 0; i < result.count; ++i) {
-            printf("-> %s\n", result.items[i].label);
-        }
     
         renderer.render(&result, render_dest_fp);
         free(buffer);
@@ -70,8 +63,6 @@ int main(int argc, char **argv)
         fprintf(stderr, UNRECOGNIZED_FORMAT_ERROR);
         return 1;
     }
-
-    printf("format: %s\n", format_handler->format_name);
     
     // section table
 
