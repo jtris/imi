@@ -3,6 +3,7 @@
 #include "core/section.h"
 #include "png_chunks.h"
 #include "util/read_bytes.h"
+#include "util/unused.h"
 
 
 static const char *IHDR_resolve_color_type(uint8_t c)
@@ -44,6 +45,8 @@ static const char *IHDR_resolve_interlace_method(uint8_t i)
 
 SectionResult png_parse_IHDR(const uint8_t *buffer, size_t len, void *ctx) 
 {
+    UNUSED(ctx);
+
     /*
     Width:              4 bytes
     Height:             4 bytes

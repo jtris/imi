@@ -1,6 +1,6 @@
 
 CC = cc
-CFLAGS = -I. #-ggdb -Wall -Wextra -pedantic
+CFLAGS = -I. -ggdb -Wall -Wextra -pedantic
 LDFLAGS = -lm
 
 SRC = main.c cli.c core/format_handler.c core/section.c core/render.c format/png/png_format.c format/png/png_chunks.c util/read_bytes.c

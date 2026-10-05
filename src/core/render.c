@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 #include "render.h"
-#include "core/section.h"
 #include "section.h"
+#include "core/section.h"
+#include "util/unused.h"
 
 
 static void render_text(SectionResult *render_data, FILE *fp);
@@ -16,8 +17,9 @@ const OutputRenderer text_renderer = {
 
 static void render_text(SectionResult *render_data, FILE *fp)
 {
-    printf("---[ %s ]--------------------\n", render_data->section_name);
+    UNUSED(fp);
 
+    printf("---[ %s ]--------------------\n", render_data->section_name);
 
     for (size_t i = 0; i < render_data->count; ++i) {
         SectionField item = render_data->items[i];
@@ -25,7 +27,7 @@ static void render_text(SectionResult *render_data, FILE *fp)
 
         switch (item.type) {
         case FIELD_INT:
-            printf("%d\n", item.as_int);
+            printf("%ld\n", item.as_int);
             break;
 
         case FIELD_STRING:
@@ -38,7 +40,7 @@ static void render_text(SectionResult *render_data, FILE *fp)
 
         case FIELD_INT_ARRAY:
             for (size_t j = 0; j < item.as_int_array.len; ++j) {
-                printf("%d", item.as_int_array.arr[j]);
+                printf("%ld", item.as_int_array.arr[j]);
                 j == item.as_int_array.len-1 ? printf("\n") : printf(", ");
             }
             break;
