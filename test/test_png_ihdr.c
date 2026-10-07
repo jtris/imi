@@ -30,8 +30,17 @@ static void test_ihdr_basic(void)
 }
 
 
+static void test_ihdr_too_short(void)
+{
+    uint8_t buffer[10] = {0};
+    SectionResult r = png_parse_IHDR(buffer, sizeof(buffer), NULL);
+    ASSERT_EQ_INT(r.ok, false);
+}
+
+
 void run_ihdr_tests(void)
 {
     RUN_TEST(test_ihdr_basic);
+    RUN_TEST(test_ihdr_too_short);
 }
 
