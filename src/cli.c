@@ -34,6 +34,9 @@ bool parse_args(int argc, char **argv, Options *out)
             continue;
         }
 
+        // no more than 1 option is allowed
+        if (mode_registered) return false;
+
         // distinguish between '-' and '--' options
         if (strncmp(arg, "--", 2) == 0) is_long_opt = true;
 
