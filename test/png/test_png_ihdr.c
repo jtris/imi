@@ -38,7 +38,7 @@ static void test_ihdr_too_short(void)
 }
 
 
-void run_ihdr_tests(void)
+void run_png_ihdr_tests(void)
 {
     RUN_TEST(test_ihdr_basic);
     RUN_TEST(test_ihdr_too_short);

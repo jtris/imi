@@ -33,4 +33,6 @@ extern uint16_t tests_run, tests_failed;
 } while (0)
 
 
+FILE *make_test_file(const uint8_t *bytes, size_t len);
+
 #endif // HARNESS_H

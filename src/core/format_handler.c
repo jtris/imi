@@ -23,17 +23,14 @@ static const size_t format_registry_count = sizeof(format_registry) / sizeof(*fo
 const ImageFormatHandler *detect_format(FILE *fp)
 {
     uint8_t prefix_buffer[SIGNATURE_BUFFER_SIZE] = {0};
-    size_t bytes_read = fread(&prefix_buffer, 1, SIGNATURE_BUFFER_SIZE, fp);
-
-    if (bytes_read < SIGNATURE_BUFFER_SIZE) return NULL;
+    size_t bytes_read = fread(prefix_buffer, 1, SIGNATURE_BUFFER_SIZE, fp);
 
     for (size_t i = 0; i < format_registry_count; ++i) {
-        const ImageFormatHandler *current_format = format_registry[i];
-        SignatureBytes current_signature = current_format->signature;
+        SignatureBytes current_signature = format_registry[i]->signature;
 
-        if (current_signature.offset + current_signature.len > SIGNATURE_BUFFER_SIZE) continue;
+        if (current_signature.offset + current_signature.len > bytes_read) continue;
         if (memcmp(prefix_buffer + current_signature.offset, current_signature.bytes, current_signature.len) == 0)
-            return current_format;
+            return format_registry[i];
     }
 
     return NULL;
