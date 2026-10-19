@@ -17,6 +17,7 @@ static const uint8_t png_signature_bytes[] = { 0x89, 'P', 'N', 'G', '\r', '\n', 
 
 static const SectionParserEntry png_parsers[] = {
     { "IHDR", png_parse_IHDR },
+    { "PLTE", png_parse_PLTE }
 };
 
 const ImageFormatHandler png_handler = {

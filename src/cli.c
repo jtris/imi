@@ -5,10 +5,12 @@
 
 
 static const OptionSpec options[] = {
-    { "help",         'h', false,  HELP         },
-    { "list-all",     'a', false,  LIST_ALL     },
-    { "list-present", 'p', false,  LIST_PRESENT },
-    { "list",         'l', true,   LIST         }
+    // name, alias, takes value, mode value
+    { "help",         'h',  false,  HELP,         },
+    { "list-all",     'a',  false,  LIST_ALL,     },
+    { "list-present", 'p',  false,  LIST_PRESENT, },
+    { "list",         'l',  true,   LIST,         },
+    { "verbose",      'v',  false,  VERBOSE,      }
 };
 
 
@@ -19,6 +21,7 @@ bool parse_args(int argc, char **argv, Options *out)
 {
     bool path_registered = false;
     bool mode_registered = false;
+    bool verbosity_set = false;
     bool is_long_opt = false;
 
     for (int i = 1; i < argc; ++i) {
@@ -34,11 +37,9 @@ bool parse_args(int argc, char **argv, Options *out)
             continue;
         }
 
-        // no more than 1 option is allowed
-        if (mode_registered) return false;
-
         // distinguish between '-' and '--' options
         if (strncmp(arg, "--", 2) == 0) is_long_opt = true;
+        else is_long_opt = false;
 
         const char *equals_char = strchr(arg, '='); // pointer to '=' in arg
 
@@ -55,6 +56,18 @@ bool parse_args(int argc, char **argv, Options *out)
         for (size_t j = 0; j < sizeof(options)/sizeof(*options); j++) {
             if ( (strlen(options[j].name) == name_len && strncmp(arg + 2, options[j].name, name_len) == 0) 
                 || (!is_long_opt && *(arg+1) == options[j].alias)) {
+
+                // handle flags that shouldn't modify the mode
+                if (options[j].mode_value == VERBOSE) {
+                    out->verbose = true;
+                    verbosity_set = true;
+                    recognized_argument = true;
+                    break;
+                }
+
+                // if we matched more than one argument that should set the mode,
+                // it's an invalid set of command-line options
+                if (mode_registered == true) return false;
             
                 // handle opts with '='
                 if (options[j].takes_value) {
@@ -65,11 +78,15 @@ bool parse_args(int argc, char **argv, Options *out)
                 out->mode = options[j].mode_value;
                 mode_registered = true;
                 recognized_argument = true;
+                break;
             }
         }
 
         if (!recognized_argument) return false;
     }
+    
+    // output is not verbose by default
+    if (!verbosity_set) out->verbose = false;
 
     // providing no options will default to --list-all
     if (!mode_registered) out->mode = LIST_ALL;

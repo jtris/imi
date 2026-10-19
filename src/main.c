@@ -8,7 +8,8 @@
 #include "util/read_bytes.h"
 
 
-void opt_list_all(FILE *fp, FILE *render_dest_fp, const ImageFormatHandler *handler, SectionTable *table, OutputRenderer renderer)
+void opt_list_all(FILE *fp, FILE *render_dest_fp, const ImageFormatHandler *handler,
+                  SectionTable *table, OutputRenderer renderer, struct RendererFlags renderer_flags)
 {
     for (size_t i = 0; i < table->count; ++i) {
         SectionParserFn parse = find_parser_fn(handler, table->items[i].name);
@@ -16,12 +17,18 @@ void opt_list_all(FILE *fp, FILE *render_dest_fp, const ImageFormatHandler *hand
 
         // parse section
         uint8_t *buffer = read_section(fp, table->items[i]); 
-        SectionResult result = parse(buffer, table->items[i].data_length, NULL); // TODO: error handling (result.ok)
+        SectionResult result = parse(buffer, table->items[i].data_length, NULL);
+        
+        if (!result.ok) {
+            fprintf(stderr, "Error: %s\n\n", result.error);
+            free(buffer);
+            break;
+        }
 
         // assign section name
         strncpy(result.section_name, table->items[i].name, sizeof(result.section_name)-1);
     
-        renderer.render(&result, render_dest_fp);
+        renderer.render(&result, render_dest_fp, renderer_flags);
         free(buffer);
     }
 
@@ -33,7 +40,7 @@ int main(int argc, char **argv)
 {
     // command line
 
-    if (argc < 2 || argc > 3) {
+    if (argc < 2) {
         fprintf(stderr, USAGE);
         return 1;
     }
@@ -75,9 +82,10 @@ int main(int argc, char **argv)
     }
 
     // cli options
+    struct RendererFlags renderer_flags = { .verbose = cli_options.verbose };
     
     if (cli_options.mode == LIST_ALL) {
-        opt_list_all(fp, NULL, format_handler, &section_table, text_renderer);
+        opt_list_all(fp, NULL, format_handler, &section_table, text_renderer, renderer_flags);
     }
 
     fclose(fp);

@@ -18,8 +18,8 @@
 
 
 typedef enum { FIELD_INT, FIELD_STRING, FIELD_FRACTION,
-               FIELD_INT_ARRAY, FIELD_ENUM, FIELD_BYTES } FieldType;
-
+               FIELD_INT_ARRAY, FIELD_ENUM, FIELD_BYTES,
+               FIELD_RGB_LIST } FieldType;
 
 /*
  * represents an individual field belonging to a section
@@ -34,7 +34,8 @@ typedef struct SectionField {
         struct { int32_t numerator, denominator; } as_fraction;
         struct { int64_t *arr; size_t len; } as_int_array;
         struct { int64_t raw; const char *resolved_label; } as_enum; // raw int representing a lookup table label
-        struct { uint8_t *data; size_t len; } as_bytes;
+        struct { const uint8_t *data; size_t len; } as_bytes;
+        struct { const uint8_t *data; size_t len; } as_rgb_list;
     };
 } SectionField;
 
@@ -89,6 +90,6 @@ void da_append_string(SectionResult *result, const char *label, char *string);
 void da_append_fraction(SectionResult *result, const char *label, int32_t numerator, int32_t denominator);
 void da_append_int_array(SectionResult *result, const char *label, int64_t *arr, size_t len);
 void da_append_enum(SectionResult *result, const char *label, int64_t raw, const char *resolved_label);
-
+void da_append_rgb_list(SectionResult *result, const char *label, const uint8_t *buffer, size_t len);
 
 #endif // SECTION_H

@@ -20,7 +20,7 @@
 #define FILE_ACCESS_ERROR "Error: Could not open file\n"
 
 
-typedef enum { HELP, LIST_ALL, LIST_PRESENT, LIST } Mode;
+typedef enum { HELP, LIST_ALL, LIST_PRESENT, LIST, VERBOSE } Mode;
 
 /*
  * used for definitions of individual command-line argument options
@@ -37,6 +37,7 @@ typedef struct OptionSpec {
 */
 typedef struct Options {
     Mode mode;
+    bool verbose;
     const char *section_name;
     const char *path;
 } Options;

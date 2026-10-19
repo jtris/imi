@@ -1,10 +1,15 @@
 #include <stddef.h>
 #include <stdbool.h>
-#include "core/section.h"
 #include "png_chunks.h"
+#include "format/png/png_format.h"
+#include "core/section.h"
 #include "util/read_bytes.h"
 #include "util/unused.h"
 
+
+/*
+ * IHDR
+ */
 
 static const char *IHDR_resolve_color_type(uint8_t c)
 {
@@ -85,3 +90,26 @@ SectionResult png_parse_IHDR(const uint8_t *buffer, size_t len, void *ctx)
     return result;
 }
 
+/*
+ * PLTE
+*/
+
+SectionResult png_parse_PLTE(const uint8_t *buffer, size_t len, void *ctx)
+{
+    UNUSED(ctx);
+    SectionResult result = {0};
+    result.ok = true;
+
+    // PLTE's length has to be divisible by 3, contains 0 < rgb entries < 257
+    if (len % 3 != 0 || len == 0 || len > 256*3) {
+        result.ok = false;
+        result.error = "PLTE chunk has an invalid length";
+        return result;
+    }
+
+    da_append_rgb_list(&result, "palette colors", buffer, len);
+
+    return result;
+}
+
+// NEXT: tEXt, iTXt, bKGD, cHRM, gAMA, pHYs, sBIT, tRNS, tIME, sRGB, eXIf

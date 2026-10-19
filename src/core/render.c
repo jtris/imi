@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 #include "render.h"
-#include "section.h"
+#include "cli.h"
 #include "core/section.h"
 #include "util/unused.h"
 
 
-static void render_text(SectionResult *render_data, FILE *fp);
+static void render_text(SectionResult *render_data, FILE *fp, struct RendererFlags flags);
 
 
 const OutputRenderer text_renderer = {
@@ -15,15 +15,22 @@ const OutputRenderer text_renderer = {
 };
 
 
-static void render_text(SectionResult *render_data, FILE *fp)
+static void indent_text_label(const char *label)
 {
+    printf("%-20s : ", label);
+}
+
+
+static void render_text(SectionResult *render_data, FILE *fp, struct RendererFlags flags)
+{
+    // TODO: improve --verbose output
     UNUSED(fp);
 
     printf("---[ %s ]--------------------\n", render_data->section_name);
 
     for (size_t i = 0; i < render_data->count; ++i) {
         SectionField item = render_data->items[i];
-        printf("%-20s : ", item.label);
+        indent_text_label(item.label);
 
         switch (item.type) {
         case FIELD_INT:
@@ -54,6 +61,31 @@ static void render_text(SectionResult *render_data, FILE *fp)
                 printf("%02x", item.as_bytes.data[k]);
                 k == item.as_bytes.len-1 ? printf("\n") : printf(" ");
             }
+            break;
+
+        case FIELD_RGB_LIST:
+            size_t entries_per_line = 8;
+
+            for (size_t i = 0; i < item.as_rgb_list.len/3; ++i) {
+                printf("#%02x%02x%02x ",
+                       item.as_rgb_list.data[i+0],
+                       item.as_rgb_list.data[i+1],
+                       item.as_rgb_list.data[i+2]
+                );
+                
+                // limit the number of entries per line
+                if ((i+1) % entries_per_line == 0 && i+1 != item.as_rgb_list.len/3) {
+                    printf("\n");
+                    indent_text_label("");
+                }
+
+                // shorten output for non-verbose opt
+                if (i > entries_per_line*2-1 && flags.verbose == false) { 
+                    printf("... (%zu more entries, use --verbose/-v)", item.as_rgb_list.len/3-i-1);
+                    break;
+                } 
+            }
+            printf("\n");
             break;
         }
 

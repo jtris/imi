@@ -61,3 +61,15 @@ void da_append_enum(SectionResult *result, const char *label, int64_t raw, const
     DA_APPEND(result, enum_field);
 }
 
+
+void da_append_rgb_list(SectionResult *result, const char *label, const uint8_t *buffer, size_t len)
+{
+    SectionField rgb_list_field = {
+        .label = label,
+        .type = FIELD_RGB_LIST,
+        .as_rgb_list = { buffer, len }
+    };
+
+    DA_APPEND(result, rgb_list_field);
+}
+
