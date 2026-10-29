@@ -62,6 +62,18 @@ void da_append_enum(SectionResult *result, const char *label, int64_t raw, const
 }
 
 
+void da_append_bytes(SectionResult *result, const char *label, const uint8_t *buffer, size_t len)
+{
+    SectionField bytes_field = {
+        .label = label,
+        .type = FIELD_BYTES,
+        .as_bytes = { buffer, len }
+    };
+
+    DA_APPEND(result, bytes_field);
+}
+
+
 void da_append_rgb_list(SectionResult *result, const char *label, const uint8_t *buffer, size_t len)
 {
     SectionField rgb_list_field = {
@@ -71,5 +83,17 @@ void da_append_rgb_list(SectionResult *result, const char *label, const uint8_t 
     };
 
     DA_APPEND(result, rgb_list_field);
+}
+
+
+void da_append_string_slice(SectionResult *result, const char *label, const char *string, size_t len)
+{
+    SectionField slice_field = {
+        .label = label,
+        .type = FIELD_STRING_SLICE,
+        .as_string_slice = { string, len }
+    };
+
+    DA_APPEND(result, slice_field);
 }
 

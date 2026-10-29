@@ -5,17 +5,24 @@
 #include "read_bytes.h"
 #include "core/section.h"
 
-/*
- * read an unsigned 32bit big-endian integer from a buffer
-*/
+
 uint32_t read_u32_be(const uint8_t *buffer, size_t offset)
 {
     const uint8_t *bytes = buffer + offset;
 
-    return  ((uint32_t) bytes[0] << 24) |
-            ((uint32_t) bytes[1] << 16) |
-            ((uint32_t) bytes[2] << 8)  |
-            ((uint32_t) bytes[3]);
+    return ((uint32_t) bytes[0] << 24) |
+           ((uint32_t) bytes[1] << 16) |
+           ((uint32_t) bytes[2] << 8)  |
+           ((uint32_t) bytes[3]);
+}
+
+
+uint16_t read_u16_be(const uint8_t *buffer, size_t offset)
+{
+    const uint8_t *bytes = buffer + offset;
+    
+    return ((uint16_t) bytes[0] << 8) |
+           ((uint16_t) bytes[1]);
 }
 
 

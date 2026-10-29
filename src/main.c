@@ -5,24 +5,28 @@
 #include "core/format_handler.h"
 #include "core/section.h"
 #include "core/render.h"
+#include "format/png/png_format.h"
 #include "util/read_bytes.h"
 
 
 void opt_list_all(FILE *fp, FILE *render_dest_fp, const ImageFormatHandler *handler,
                   SectionTable *table, OutputRenderer renderer, struct RendererFlags renderer_flags)
 {
+
+    PngContext *ctx = handler->build_context(fp, table);
+
     for (size_t i = 0; i < table->count; ++i) {
         SectionParserFn parse = find_parser_fn(handler, table->items[i].name);
         if (parse == NULL) continue; // no parser found
 
         // parse section
         uint8_t *buffer = read_section(fp, table->items[i]); 
-        SectionResult result = parse(buffer, table->items[i].data_length, NULL);
+        SectionResult result = parse(buffer, table->items[i].data_length, ctx);
         
         if (!result.ok) {
-            fprintf(stderr, "Error: %s\n\n", result.error);
+            fprintf(stderr, "[ERROR]: %s\n\n", result.error);
             free(buffer);
-            break;
+            continue;
         }
 
         // assign section name
@@ -32,6 +36,7 @@ void opt_list_all(FILE *fp, FILE *render_dest_fp, const ImageFormatHandler *hand
         free(buffer);
     }
 
+    free(ctx);
     return;
 }
 

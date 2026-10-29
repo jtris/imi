@@ -87,8 +87,14 @@ static void render_text(SectionResult *render_data, FILE *fp, struct RendererFla
             }
             printf("\n");
             break;
-        }
 
+        case FIELD_STRING_SLICE:
+            for (size_t i = 0; i < item.as_string_slice.len; ++i) {
+                printf("%c", item.as_string_slice.string[i]);
+            }
+            printf("\n");
+            break;
+        }
     }
 
     printf("\n");
